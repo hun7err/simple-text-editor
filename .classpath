@@ -2,10 +2,11 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.swt.gtk.linux.x86_64_3.100.1.v4234e.jar"/>
-	<classpathentry kind="lib" path="/home/hun7er/Pobrane/insubstantial-libraries-7.2.1/substance-7.2.1.jar"/>
-	<classpathentry kind="lib" path="/home/hun7er/Pobrane/insubstantial-libraries-7.2.1/trident-7.2.1.jar"/>
-	<classpathentry kind="lib" path="/home/hun7er/Pobrane/insubstantial-libraries-7.2.1/laf-widget-7.2.1.jar"/>
-	<classpathentry kind="lib" path="/home/hun7er/Pobrane/insubstantial-libraries-7.2.1/laf-plugin-7.2.1.jar"/>
+	<classpathentry kind="lib" path="lib/jsyntaxpane-0.9.4.jar"/>
+	<classpathentry kind="lib" path="lib/laf-plugin-7.2.1.jar"/>
+	<classpathentry kind="lib" path="lib/laf-widget-7.2.1.jar"/>
+	<classpathentry kind="lib" path="lib/substance-7.2.1.jar"/>
+	<classpathentry kind="lib" path="lib/trident-7.2.1.jar"/>
+	<classpathentry kind="lib" path="lib/rsyntaxtextarea.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
