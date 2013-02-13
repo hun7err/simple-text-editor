@@ -24,7 +24,8 @@ public class AppManager {
 	}
 	
 	public static void addDocument(Document d) {
-		documents.add(d);
+		documents.addElement(d);
+		System.out.println("Added: " + d.getFilename() + " to Vector");
 	}
 
 	/**
@@ -45,7 +46,7 @@ public class AppManager {
 		}
 	
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
+		documents = new Vector<Document>();
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				try {

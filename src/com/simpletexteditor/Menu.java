@@ -7,8 +7,10 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
 public class Menu {
-	public JMenuItem fileOpenItem,
+	public JMenuItem fileNewItem,
+					 fileOpenItem,
 					 fileReloadItem,
+					 fileCloseItem,
 					 fileSaveItem = null,
 					 fileSaveAsItem = null,
 					 editUndoItem = null,
@@ -32,10 +34,14 @@ public class Menu {
 		documentMenu = new JMenu("Document");
 		helpMenu = new JMenu("Help");
 		
+		fileNewItem = new JMenuItem("New");
+		fileNewItem.addActionListener(l);
 		fileOpenItem = new JMenuItem("Open");
 		fileOpenItem.addActionListener(l);
 		fileReloadItem = new JMenuItem("Reload");
 		fileReloadItem.addActionListener(l);
+		fileCloseItem = new JMenuItem("Close");
+		fileCloseItem.addActionListener(l);
 		fileSaveItem = new JMenuItem("Save");
 		fileSaveItem.addActionListener(l);
 		fileSaveAsItem = new JMenuItem("Save as...");
@@ -51,8 +57,10 @@ public class Menu {
 		documentSearchAndReplaceItem = new JMenuItem("Search and replace");
 		documentSearchAndReplaceItem.addActionListener(l);
 		
+		fileMenu.add(fileNewItem);
 		fileMenu.add(fileOpenItem);
 		fileMenu.add(fileReloadItem);
+		fileMenu.add(fileCloseItem);
 		fileMenu.add(fileSaveItem);
 		fileMenu.add(fileSaveAsItem);
 		

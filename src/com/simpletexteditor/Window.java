@@ -173,7 +173,11 @@ public class Window implements ActionListener, ItemListener {
 				d.setText(val);
 				//AppManager.addDocument(d);
 				tabs.add(d.getFilename(), t);
-				AppManager.addDocument(d);
+				try {
+					AppManager.addDocument(d);
+				} catch (Exception exc) {
+					System.out.println("Nie spodziewałem się Hiszpańskiej Inkwizycji!");
+				}
 				frame.repaint();
 				//tabs.setSelectedIndex(AppManager.getDocuments().size()-1);
 				/*
@@ -192,14 +196,23 @@ public class Window implements ActionListener, ItemListener {
 		} else if (e.getSource().equals(menu.fileSaveAsItem)) {
 			//final JFileChooser fc = new JFileChooser();
 			//int ret = fc.showSaveDialog(frame);
-		} else if(e.getSource().getClass().equals(JComboBox.class)) {
+		/*} else if(e.getSource().getClass().equals(JComboBox.class)) {
 			try {
 				JComboBox temp = (JComboBox)e.getSource();
 				setSkin((String)temp.getSelectedItem());
 				frame.repaint();
 			} catch (Exception exc) {
 				exc.printStackTrace();
-			}
+			}*/
+		} else if (e.getSource().equals(menu.fileCloseItem)) {
+			AppManager.getDocuments().remove(tabs.getSelectedIndex());
+			tabs.remove(tabs.getSelectedIndex());
+		} else if(e.getSource().equals(menu.editUndoItem)) {
+			//AppManager.getDocuments()[tabs.getSelectedIndex()-1]
+			System.out.println(AppManager.getDocuments().get(tabs.getSelectedIndex()).getFilename());
+			AppManager.getDocuments().get(tabs.getSelectedIndex()).getEditor().undoLastAction();
+		} else if (e.getSource().equals(menu.editRedoItem)) {
+			AppManager.getDocuments().get(tabs.getSelectedIndex()).getEditor().redoLastAction();
 		}
         //...Get information from the action event...
         //...Display it in the text area...
