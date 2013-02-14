@@ -4,7 +4,8 @@
 package com.simpletexteditor;
 
 import java.awt.BorderLayout;
-import java.awt.Font;
+import java.awt.FlowLayout;
+//import java.awt.Font;
 //import java.awt.Color;
 //import java.awt.Component;
 import java.awt.Toolkit;
@@ -14,13 +15,11 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 //import java.awt.event.KeyEvent;
 import java.io.File;
+import java.io.FileWriter;
 //import java.awt.image.*;
 import java.io.IOException;
 //import javax.imageio.ImageIO;
 import javax.swing.*;
-import javax.swing.text.html.HTMLDocument;
-
-import jsyntaxpane.DefaultSyntaxKit;
 
 import org.fife.ui.rtextarea.*;
 import org.fife.ui.rsyntaxtextarea.*;
@@ -30,22 +29,18 @@ import org.fife.ui.rsyntaxtextarea.*;
  *
  */
 public class Window implements ActionListener, ItemListener {
-	private JFrame frame = null;
+	private JFrame frame = null,
+				   searchFrame = null,
+				   searchAndReplaceFrame = null;
 	private String curSkin = "Dust"/*"Graphite","Dust","Mariner","Gemini","Autumn"*/;
 	private int width, height;
-	private static final String version = "0.001 (alpha)";
+	private static final String version = "0.0999 (work in progress)";
 	private JPanel panel;
 	private JTabbedPane tabs;
 	private Menu menu;
-	// - kontener (Vector) na taby a tam JPanele a w nich JSyntaxPane
-	// - powiązać Document z tabami (JPanelami)
-	// - metoda do tworzenia menu (dość łatwego tworzenia)
-	// - szukanie i zamiana:
-	// - www.swingall.com/findreplace/index.html
-	// - download: www.swingall.com/download/jfindreplace.zip
-	// - przy zamykaniu pliku/zakładki dać jakieś okienko z zapytaniem czy zapisać plik
-	// - focus na świeżo otwartym pliku
-	// - wydzielić obsługę eventów do oddzielnej klasy EventHandler (wtedy implements wyleci do tej klasy wraz z metodą wyłapującą eventy)
+	private JTextField searchField;
+	private JCheckBox regexCB;
+	private JCheckBox matchCaseCB;
 	
 	public void setSkin(String name) throws Exception {
 		curSkin = name;
@@ -88,29 +83,7 @@ public class Window implements ActionListener, ItemListener {
 		panel.add(menu.getMenuBar(), BorderLayout.PAGE_START);
 		panel.add(tabs, BorderLayout.CENTER);
 		frame.add(panel);
-		//frame.getContentPane().add(label);
 		frame.setVisible(true);
-//////////////////////////////////////////zmiana stylu///////////////////////////////////////////////
-		//JFrame frame_style = new JFrame("Wybierz styl");
-		//frame_style.setSize(200, 90);
-		//frame_style.setVisible(true);
-		//String styles[] = {"Dust", "Graphite", "Mariner", "BusinessBlackSteel", "Gemini", "Autumn"}; // "Dust"/*"Graphite","Dust","Mariner","Gemini","Autumn"
-		//JComboBox box = new JComboBox(styles);
-		//box.addActionListener(this);
-		//frame_style.add(box);
-		/*RSyntaxTextArea textArea = new RSyntaxTextArea();
-		//textArea.setFont(new Font("Terminus", 12, 12));
-	    textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JAVA);
-	    textArea.setCodeFoldingEnabled(true);
-	    textArea.setAntiAliasingEnabled(true);
-	    textArea.setVisible(true);
-	    textArea.setText("Test\nTest\nTest");
-	    RTextScrollPane sp = new RTextScrollPane(textArea);
-	    sp.setFoldIndicatorEnabled(true);
-	    sp.setVisible(true);
-	    JPanel tab = new JPanel(new BorderLayout());
-	    tab.add(sp);
-	    tabs.add("test", tab);*/
 	}
 	
 	public Window(int w, int h) throws Exception {
@@ -127,6 +100,26 @@ public class Window implements ActionListener, ItemListener {
 	}
 	
 	public void actionPerformed(ActionEvent e) {
+		if(searchFrame != null) {
+			String command = e.getActionCommand();
+			boolean forward = "FindNext".equals(command);
+			
+			SearchContext context = new SearchContext();
+			String text = searchField.getText();
+			if(text.length() > 0) {
+				context.setSearchFor(text);
+				context.setMatchCase(matchCaseCB.isSelected());
+				context.setRegularExpression(regexCB.isSelected());
+				context.setSearchForward(forward);
+				context.setWholeWord(false);
+				
+				boolean found = SearchEngine.find(AppManager.getDocuments().get(tabs.getSelectedIndex()).getEditor(), context);
+				// do replace jest metoda replace() w SearchEngine
+				if(!found) {
+					JOptionPane.showMessageDialog(frame, "Text not found");
+				}
+			}
+		}
 		if(e.getSource().equals(menu.fileOpenItem)) {
 			final JFileChooser fc = new JFileChooser();
 			int ret = fc.showOpenDialog(frame);
@@ -139,26 +132,6 @@ public class Window implements ActionListener, ItemListener {
 					exc.printStackTrace();
 				}
 				Document d = new Document(file);
-				JEditorPane edit = new JEditorPane();
-				edit.setFont(new Font("Segoe Script", 0, 14));
-				//String f = DefaultSyntaxKit.getProperty("font");
-				//System.out.print(f);
-				//Font font = new Font("Terminus", Font.PLAIN, 14);
-			    //String bodyRule = "body { font-family: " + font.getFamily() + "; " + "font-size: " + font.getSize() + "pt; }";
-			    //((HTMLDocument)edit.getDocument()).getStyleSheet().addRule(bodyRule);
-				/*RSyntaxTextArea textArea = new RSyntaxTextArea();
-				//textArea.setFont(new Font("Terminus", 12, 12));
-			    textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JAVA);
-			    textArea.setCodeFoldingEnabled(true);
-			    textArea.setAntiAliasingEnabled(true);
-			    textArea.setVisible(true);
-			    textArea.setText("Test\nTest\nTest");
-			    RTextScrollPane sp = new RTextScrollPane(textArea);
-			    sp.setFoldIndicatorEnabled(true);
-			    sp.setVisible(true);
-			    JPanel tab = new JPanel(new BorderLayout());
-			    tab.add(sp);
-			    tabs.add("test", tab);*/
 				d.setEditor(new RSyntaxTextArea());
 			    d.getEditor().setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JAVA);
 			    d.getEditor().setCodeFoldingEnabled(true);
@@ -179,34 +152,119 @@ public class Window implements ActionListener, ItemListener {
 					System.out.println("Nie spodziewałem się Hiszpańskiej Inkwizycji!");
 				}
 				frame.repaint();
-				//tabs.setSelectedIndex(AppManager.getDocuments().size()-1);
-				/*
-		//codeEditor = new JEditorPane();
-		//JScrollPane scrPane = new JScrollPane(codeEditor);
-		//tab.add(scrPane, BorderLayout.CENTER);
-		//tab.doLayout();
-		//codeEditor.setContentType("text/java");
-		//codeEditor.setText("public static void main(String[] args) {\n}");
-		//tabs.add("main.java", tab);*/
 			}
+		} else if (e.getSource().equals(menu.fileNewItem)) {
+			Document d = new Document("New");
+			d.setEditor(new RSyntaxTextArea());
+		    d.getEditor().setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JAVA);
+		    d.getEditor().setCodeFoldingEnabled(true);
+		    d.getEditor().setAntiAliasingEnabled(true);
+			//RTextScrollPane sp = new RTextScrollPane(d.getEditor());
+			d.setScroll(new RTextScrollPane(d.getEditor()));
+			d.getScroll().setFoldIndicatorEnabled(true);
+			JPanel t = d.getTab();
+			t.add(d.getScroll(), BorderLayout.CENTER);
+			t.doLayout();
+			d.setType(SyntaxConstants.SYNTAX_STYLE_JAVA);
+			AppManager.addDocument(d);
+			tabs.add(d.getFilename(), t);
 		} else if (e.getSource().equals(menu.fileReloadItem)) {
+			String val = "";
+			try {
+				val = AppManager.readFile(AppManager.getDocuments().get(tabs.getSelectedIndex()).getFile());
+			} catch (IOException exc) {
+				exc.printStackTrace();
+			}
+			AppManager.getDocuments().get(tabs.getSelectedIndex()).setText(val);
 			// przeładuj plik
 		} else if (e.getSource().equals(menu.fileSaveItem)) {
-			// zapisz
-		} else if (e.getSource().equals(menu.fileSaveAsItem)) {
-			//final JFileChooser fc = new JFileChooser();
-			//int ret = fc.showSaveDialog(frame);
-		/*} else if(e.getSource().getClass().equals(JComboBox.class)) {
+			String content = AppManager.getDocuments().get(tabs.getSelectedIndex()).getEditor().getText();
+			
+			if(AppManager.getDocuments().get(tabs.getSelectedIndex()).getFile() == null) {
+				final JFileChooser fc = new JFileChooser();
+				int ret = fc.showSaveDialog(frame);
+				if(ret == JFileChooser.APPROVE_OPTION) {
+					File file = fc.getSelectedFile();
+					AppManager.getDocuments().get(tabs.getSelectedIndex()).setFile(file);
+					tabs.setTitleAt(tabs.getSelectedIndex(), file.getName());
+					
+					try {
+						FileWriter fw = new FileWriter(file);
+						fw.write(content);
+						fw.close();
+					} catch (IOException io) {
+						io.printStackTrace();
+					}
+				}
+			} else {
 			try {
-				JComboBox temp = (JComboBox)e.getSource();
-				setSkin((String)temp.getSelectedItem());
-				frame.repaint();
-			} catch (Exception exc) {
-				exc.printStackTrace();
-			}*/
+				File f = AppManager.getDocuments().get(tabs.getSelectedIndex()).getFile();
+				System.out.println(f.getAbsolutePath());
+				
+				FileWriter fw = new FileWriter(f);
+				fw.write(content);
+				fw.close();
+			} catch (IOException io) {
+				io.printStackTrace();
+			}
+			}
+		} else if (e.getSource().equals(menu.fileSaveAsItem)) {
+			String content = AppManager.getDocuments().get(tabs.getSelectedIndex()).getEditor().getText();
+			
+			final JFileChooser fc = new JFileChooser();
+			int ret = fc.showSaveDialog(frame);
+			if(ret == JFileChooser.APPROVE_OPTION) {
+				File file = fc.getSelectedFile();
+				AppManager.getDocuments().get(tabs.getSelectedIndex()).setFile(file);
+				tabs.setTitleAt(tabs.getSelectedIndex(), file.getName());
+				
+				try {
+					FileWriter fw = new FileWriter(file);
+					fw.write(content);
+					fw.close();
+				} catch (IOException io) {
+					io.printStackTrace();
+				}
+			}
 		} else if (e.getSource().equals(menu.fileCloseItem)) {
 			AppManager.getDocuments().remove(tabs.getSelectedIndex());
 			tabs.remove(tabs.getSelectedIndex());
+		} else if(e.getSource().equals(menu.documentSearchItem)) {
+			searchFrame = new JFrame("Search");
+			JPanel content = new JPanel(new BorderLayout());
+			JPanel inner1 = new JPanel(new FlowLayout()), inner2 = new JPanel(new FlowLayout());
+			searchFrame.setSize(220, 140);
+			searchFrame.setAlwaysOnTop(true);
+			searchField = new JTextField(20);
+			content.add(searchField, BorderLayout.PAGE_START);
+			final JButton nextButton = new JButton("next >>");
+			nextButton.setActionCommand("FindNext");
+			nextButton.addActionListener(this);
+			JButton prevButton = new JButton("<< prev");
+			searchField.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					nextButton.doClick(0);
+				}
+			});
+			prevButton.setActionCommand("FindPrev");
+			prevButton.addActionListener(this);
+			inner1.add(prevButton);
+			inner1.add(nextButton);
+			regexCB = new JCheckBox("Regex");
+			inner2.add(regexCB);
+			matchCaseCB = new JCheckBox("Match case");
+			inner2.add(matchCaseCB);
+			content.add(inner1, BorderLayout.CENTER);
+			content.add(inner2, BorderLayout.PAGE_END);
+			searchFrame.add(content);
+			searchFrame.setVisible(true);
+///////////////////////////////////////////////////////////////////////////////////
+			// to-do: podpiąć zamianę + zrobić okno jak tu wyżej ^
+		} else if(e.getSource().equals(menu.documentSearchAndReplaceItem)) {
+			searchAndReplaceFrame = new JFrame("SearchAndReplace");
+			searchAndReplaceFrame.setSize(320, 240);
+			searchAndReplaceFrame.setVisible(true);
+/////////////////////////////////////////////////////////////////////////////////////
 		} else if(e.getSource().equals(menu.editUndoItem)) {
 			//AppManager.getDocuments()[tabs.getSelectedIndex()-1]
 			System.out.println(AppManager.getDocuments().get(tabs.getSelectedIndex()).getFilename());

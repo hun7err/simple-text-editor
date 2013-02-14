@@ -25,7 +25,7 @@ public class AppManager {
 	
 	public static void addDocument(Document d) {
 		documents.addElement(d);
-		System.out.println("Added: " + d.getFilename() + " to Vector");
+		//System.out.println("Added: " + d.getFilename() + " to Vector");
 	}
 
 	/**
@@ -57,7 +57,6 @@ public class AppManager {
 					System.out.println("Failed to create the main window; quitting...");
 					System.exit(1);
 				}
-				//initUI();
 			}
 		});
 	}

@@ -3,7 +3,6 @@ package com.simpletexteditor;
 import java.awt.BorderLayout;
 import java.awt.Font;
 import java.io.File;
-import java.io.IOException;
 //import javax.swing.JEditorPane;
 import javax.swing.JPanel;
 //import javax.swing.JScrollPane;
@@ -15,9 +14,7 @@ import org.fife.ui.rtextarea.*;
 import org.fife.ui.rsyntaxtextarea.*;
 
 public class Document {
-	private String	before, // after undo
-					after, // after redo
-					filename; //
+	private String filename; //
 	private File file;
 	private JPanel tab;
 	private RSyntaxTextArea editor;
@@ -46,18 +43,8 @@ public class Document {
 		//editor.setContentType(s);
 		editor.setSyntaxEditingStyle(s);
 	}
-	public void setBefore(String s) {
-		before = s;
-	}
-	public void setAfter(String s) {
-		after = s;
-	}
-	
-	public String getBefore() {
-		return before;
-	}
-	public String getAfter() {
-		return after;
+	public void setFile(File f) {
+		file = f;
 	}
 
 	public RSyntaxTextArea getEditor() {
@@ -72,27 +59,20 @@ public class Document {
 	public String getFilename() {
 		return filename;
 	}
+	public File getFile() {
+		return file;
+	}
 	
 	public Document(String name) {
 		tab = new JPanel();
 		tab.setLayout(new BorderLayout());
 		filename = name;
-		file = new File(filename);
-		try {
-			before = AppManager.readFile(file);
-		} catch(IOException e) {
-			e.printStackTrace();
-		}
+		//file = new File(filename);
 	}
 	public Document(File f) {
 		tab = new JPanel();
 		tab.setLayout(new BorderLayout());
 		file = f;
-		filename = f.getName();
-		try {
-			before = AppManager.readFile(f);
-		} catch(IOException e) {
-			e.printStackTrace();
-		}
+		if(f != null) filename = f.getName();
 	}
 }
