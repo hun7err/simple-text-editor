@@ -1,7 +1,6 @@
 package com.simpletexteditor;
 
 import java.awt.BorderLayout;
-import java.awt.Font;
 import java.io.File;
 //import javax.swing.JEditorPane;
 import javax.swing.JPanel;
@@ -28,7 +27,7 @@ public class Document {
 		DefaultSyntaxKit.setConfig(config); */
 		// to-do: customowe popup-menu + popup-menu dla tabów
 		editor = e;
-		editor.setFont(new Font("Monospace", 12, 12));
+		//editor.setFont(new Font("Monospace", 12, 12));
 	}
 	public void setScroll(RTextScrollPane s) {
 		linenumbers = s;

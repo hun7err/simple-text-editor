@@ -18,9 +18,14 @@ import java.util.Vector;
 public class AppManager {
 	private static Window win = null;
 	private static Vector<Document> documents;
+	private static final String version = "0.0999 (work in progress)";
 	
 	public static Vector<Document> getDocuments() {
 		return documents;
+	}
+	
+	public static String getVersion() {
+		return version;
 	}
 	
 	public static void addDocument(Document d) {
@@ -51,7 +56,7 @@ public class AppManager {
 			public void run() {
 				try {
 					AppManager.win = new Window(800, 600);
-					win.setSkin("BusinessBlackSteel");
+					win.setSkin("Gemini");
 				} catch(Exception e) {
 					e.printStackTrace();
 					System.out.println("Failed to create the main window; quitting...");

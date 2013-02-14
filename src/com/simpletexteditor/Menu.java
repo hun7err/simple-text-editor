@@ -15,6 +15,7 @@ public class Menu {
 					 fileSaveAsItem = null,
 					 editUndoItem = null,
 					 editRedoItem = null,
+					 editChangeThemeItem = null,
 					 documentSearchItem = null,
 					 documentSearchAndReplaceItem = null,
 					 helpAboutItem = null;
@@ -50,6 +51,8 @@ public class Menu {
 		editUndoItem.addActionListener(l);
 		editRedoItem = new JMenuItem("Redo");
 		editRedoItem.addActionListener(l);
+		editChangeThemeItem = new JMenuItem("Change theme...");
+		editChangeThemeItem.addActionListener(l);
 		helpAboutItem = new JMenuItem("About");
 		helpAboutItem.addActionListener(l);
 		documentSearchItem = new JMenuItem("Search");
@@ -66,6 +69,7 @@ public class Menu {
 		
 		editMenu.add(editUndoItem);
 		editMenu.add(editRedoItem);
+		editMenu.add(editChangeThemeItem);
 		
 		documentMenu.add(documentSearchItem);
 		documentMenu.add(documentSearchAndReplaceItem);
