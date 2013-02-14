@@ -28,6 +28,21 @@ import org.fife.ui.rsyntaxtextarea.*;
  * @author hun7er
  *
  */
+
+///////////////////////////
+/*
+
+to-do:
+	- jak się uda to menu kontekstowe do zakładek
+	- replace i replaceAll (jedno okno)
+	- Makefile (z generowaniem .jar do bin/ włącznie), pamiętać o classpath
+	
+	Jest godzina 2:00, muszę wstać na 6:00 i spakować walizkę (czyli pewnie koło 5:00).
+	Damn you, Java...
+
+*/
+//////////////////////////
+
 public class Window implements ActionListener, ItemListener {
 	private JFrame frame = null,
 				   searchFrame = null,
